@@ -43,7 +43,7 @@ public class IFCDateTest {
         assert ifcdate.month() <= 13;
         assert ifcdate.day() <= 29;
         assert ifcdate.leap_day() == (cal.isLeapYear(cal.get(Calendar.YEAR)) && cal.get(Calendar.DAY_OF_YEAR) == 169);
-        Assert.assertEquals(cal,ifcdate.convertBack());
+        assert cal.equals(ifcdate.convertBack());
         assert ifcdate.year_day() == (cal.get(Calendar.MONTH) == 11 && cal.get(Calendar.DAY_OF_MONTH) == 31);
     }
 }
