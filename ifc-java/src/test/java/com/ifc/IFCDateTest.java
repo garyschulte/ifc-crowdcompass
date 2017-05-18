@@ -1,5 +1,6 @@
 package com.ifc;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -19,9 +20,10 @@ public class IFCDateTest {
             new GregorianCalendar(2016, 12, 31), // year day in a leap year
             new GregorianCalendar(2015, 12, 31), // year day in a non leap year
             new GregorianCalendar(2017, 5, 17),  // today just because
-            new GregorianCalendar(2016, 6, 17), // leap day ordinal in leap year
-            new GregorianCalendar(2016, 6, 18), // day after leap day ordinal in leap year
-            new GregorianCalendar(2015, 6, 17), // leap day ordinal in nonleap year
+            new GregorianCalendar(2016, 0, 17), // leap day ordinal in leap year
+            new GregorianCalendar(2016, 5, 17), // leap day ordinal in leap year
+            new GregorianCalendar(2016, 5, 18), // day after leap day ordinal in leap year
+            new GregorianCalendar(2015, 5, 17), // leap day ordinal in nonleap year
             new GregorianCalendar(1969, 12, 30), // pre-epoch
             new GregorianCalendar(2, 7, 10), // way back date
             new GregorianCalendar(2017, 5, 17, 11, 19, 20) // just to be sure time components are working
@@ -41,7 +43,7 @@ public class IFCDateTest {
         assert ifcdate.month() <= 13;
         assert ifcdate.day() <= 29;
         assert ifcdate.leap_day() == (cal.isLeapYear(cal.get(Calendar.YEAR)) && cal.get(Calendar.DAY_OF_YEAR) == 169);
-        assert cal.equals(ifcdate.convertBack());
+        Assert.assertEquals(cal,ifcdate.convertBack());
         assert ifcdate.year_day() == (cal.get(Calendar.MONTH) == 12 && cal.get(Calendar.DAY_OF_MONTH) == 31);
     }
 }

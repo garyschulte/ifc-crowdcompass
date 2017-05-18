@@ -8,7 +8,11 @@ import java.util.*;
  */
 public class IFCDate {
     private final int day, month, year, hour, minute, second, dayOfYear;
-    public static final int LEAP_DAY_ORDINAL = 28 * 6 + 1;
+    public static final int
+            LEAP_DAY_ORDINAL = 28 * 6 + 1,
+            ONE_BASED = 1,
+            FIXED_DAYS = 28;
+
 
     // just here for readability, reference and/or external use
     public enum MONTH {
@@ -40,14 +44,23 @@ public class IFCDate {
         this.minute = cal.get(Calendar.MINUTE);
         this.second = cal.get(Calendar.SECOND);
 
-        // cheap way to let us have rational arithmetic for month/day determination
-        int leapOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL ? 1 : 0;
+        // if we are on or past leap day, our leap month offset is 1 for month determination below
+        int leapMonthOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL ? 1 : 0;
 
-        // month is just the ordinal day of the year div 28, accounting for leap day
-        this.month = (dayOfYear - leapOffset) / 28;
+        // fidgety, month is fundamentally dayOfYear div 28, with offsets:
+        //  minus a leapMonthOffset calculated above
+        //  minus one to account for current month 28th day reporting
+        //  finally add 1 to the result to make months 1 based
+        this.month = (dayOfYear - leapMonthOffset - 1) / FIXED_DAYS + ONE_BASED;
 
-        // similarly, day is the modulo
-        this.day = (dayOfYear - leapOffset) % 28;
+
+        // if we are past leap day, our leap day offset is 1 for day determination below
+        int leapDayOffset = cal.isLeapYear(year) && dayOfYear > LEAP_DAY_ORDINAL ? 1 : 0;
+
+        // similarly fidgety, day is dayOfYear minus whole months, with offsets:
+        //   minus a leapDayOffset
+        //   minus 1 from months to make months zero based
+        this.day = dayOfYear - leapDayOffset - (month - ONE_BASED) * FIXED_DAYS;
     }
 
     public int day() {
@@ -96,10 +109,15 @@ public class IFCDate {
     public GregorianCalendar convertBack() {
         GregorianCalendar back = new GregorianCalendar(year, 0, 1, hour, minute, second);
 
-        int addTo = month * 28;
+        // starting from jan, so go back to zero-based month value
+        int addTo = (month - ONE_BASED) * 28;
+
+        // if we are past june and it is a leap year, tack on another day
         if (month > 6 && back.isLeapYear(year)) {
             addTo +=1;
         }
+
+        // starting on jan 1, so subtract a day from day value
         addTo += day - 1;
         back.add(Calendar.DAY_OF_YEAR, addTo);
 
