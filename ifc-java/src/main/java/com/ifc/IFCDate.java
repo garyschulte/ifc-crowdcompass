@@ -5,6 +5,8 @@ import java.util.*;
 /**
  * Utility class to convert the day and month representation of a gregorian calendar to
  * international fixed, with max precision of a second.  timezone and locale are unhandled
+ *
+ * In retrospect a date-iterating type of interface would be easier to follow (but slower)
  */
 public class IFCDate {
     private final int day, month, year, hour, minute, second, dayOfYear;
@@ -54,8 +56,9 @@ public class IFCDate {
         int leapDayDayOffset = cal.isLeapYear(year) && dayOfYear > LEAP_DAY_ORDINAL ? 1 : 0;
 
         // fidgety, month is fundamentally dayOfYear div 28, with offsets:
-        //  minus a leapMonthOffset calculated above
-        //  minus one to account for current month 28th day reporting
+        //  minus a leapDayMonthOffset determined above
+        //  minus a yearDayMonthOffset determined above
+        //  minus one to account for current month's incomplete day
         //  finally add 1 to the result to make months 1 based
         this.month = (dayOfYear - yearDayMonthOffset - leapDayMonthOffset - 1) / FIXED_DAYS + ONE_BASED;
 
