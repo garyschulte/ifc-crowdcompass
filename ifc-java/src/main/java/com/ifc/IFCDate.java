@@ -1,72 +1,37 @@
 package com.ifc;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import java.util.*;
+
+import static com.ifc.MonthDayResolver.MONTH;
+import static com.ifc.MonthDayResolver.ONE_BASED;
 
 /**
  * Utility class to convert the day and month representation of a gregorian calendar to
  * international fixed, with max precision of a second.  timezone and locale are unhandled
  *
- * In retrospect a date-iterating type of interface would be easier to follow (but slower)
+ * just for fun there are two MonthDayResolver's.
  */
 public class IFCDate {
-    private final int day, month, year, hour, minute, second, dayOfYear;
-    public static final int
-            LEAP_DAY_ORDINAL = 28 * 6 + 1,
-            ONE_BASED = 1,
-            FIXED_DAYS = 28;
+    private int day, month, year, hour, minute, second, dayOfYear;
+    private MonthDayResolver monthDayResolver;
 
-
-    // just here for readability, reference and/or external use
-    public enum MONTH {
-        January(1),
-        February(2),
-        March(3),
-        April(4),
-        May(5),
-        June(6),
-        Sol(7),
-        July(8),
-        August(9),
-        September(10),
-        October(11),
-        November(12),
-        December(13);
-
-        public final int ordinal;
-
-        MONTH(int ord) {
-            this.ordinal = ord;
-        }
-    }
+    // default to the arithmetic resolver
     public IFCDate(GregorianCalendar cal) {
+        this(cal, new MonthDayResolver.Arithmetic());
+    }
 
+    public IFCDate(GregorianCalendar cal, MonthDayResolver monthDayResolver) {
+        this.monthDayResolver = monthDayResolver;
         this.dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
         this.year = cal.get(Calendar.YEAR);
         this.hour = cal.get(Calendar.HOUR_OF_DAY);
         this.minute = cal.get(Calendar.MINUTE);
         this.second = cal.get(Calendar.SECOND);
-
-
-        // if we are on or past leap day, our leap month offset is 1 for month determination below
-        int  leapDayMonthOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL ? 1 : 0;
-        // 'year day' offset for month determination if we happen to be on the last day of the year
-        int yearDayMonthOffset = dayOfYear == 365 + leapDayMonthOffset ? 1 : 0;
-
-        // if we are *past* leap day, our leap day offset is 1 for day determination below
-        int leapDayDayOffset = cal.isLeapYear(year) && dayOfYear > LEAP_DAY_ORDINAL ? 1 : 0;
-
-        // fidgety, month is fundamentally dayOfYear div 28, with offsets:
-        //  minus a leapDayMonthOffset determined above
-        //  minus a yearDayMonthOffset determined above
-        //  minus one to account for current month's incomplete day
-        //  finally add 1 to the result to make months 1 based
-        this.month = (dayOfYear - yearDayMonthOffset - leapDayMonthOffset - 1) / FIXED_DAYS + ONE_BASED;
-
-
-        // similarly fidgety, day is dayOfYear minus whole months, with offsets:
-        //   minus a leapDayOffset
-        //   minus 1 from months to make months zero based
-        this.day = dayOfYear - leapDayDayOffset - (month - ONE_BASED) * FIXED_DAYS;
+        ImmutablePair<Integer, Integer> monthDay = monthDayResolver.getMonthDay(cal);
+        this.month = monthDay.getLeft().intValue();
+        this.day = monthDay.getRight().intValue();
     }
 
     public int day() {
@@ -101,11 +66,11 @@ public class IFCDate {
      * ow.  these method names hurt.
      */
     public boolean year_day() {
-        return (month == MONTH.December.ordinal && day == 29);
+        return (month == MONTH.December.ord && day == 29);
     }
 
     public boolean leap_day() {
-        return (month == MONTH.June.ordinal && day == 29);
+        return (month == MONTH.June.ord && day == 29);
     }
 
     /**
@@ -129,5 +94,4 @@ public class IFCDate {
 
         return back;
     }
-
 }
