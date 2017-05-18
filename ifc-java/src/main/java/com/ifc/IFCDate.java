@@ -32,7 +32,7 @@ public class IFCDate {
             this.ordinal = ord;
         }
     }
-    public IFCDate(GregorianCalendar cal){
+    public IFCDate(GregorianCalendar cal) {
 
         this.dayOfYear = cal.get(Calendar.DAY_OF_YEAR);
         this.year = cal.get(Calendar.YEAR);
@@ -41,7 +41,7 @@ public class IFCDate {
         this.second = cal.get(Calendar.SECOND);
 
         // cheap way to let us have rational arithmetic for month/day determination
-        int leapOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL?1:0;
+        int leapOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL ? 1 : 0;
 
         // month is just the ordinal day of the year div 28, accounting for leap day
         this.month = (dayOfYear - leapOffset) / 28;
@@ -58,15 +58,31 @@ public class IFCDate {
         return month;
     }
 
+    @CoverageIgnore
     public int year() {
         return year;
+    }
+
+    @CoverageIgnore
+    public int hour() {
+        return hour;
+    }
+
+    @CoverageIgnore
+    public int minute() {
+        return minute;
+    }
+
+    @CoverageIgnore
+    public int second() {
+        return second;
     }
 
     /**
      * ow.  these method names hurt.
      */
     public boolean year_day() {
-        return (month == MONTH.December.ordinal && day == 29 );
+        return (month == MONTH.December.ordinal && day == 29);
     }
 
     public boolean leap_day() {
@@ -78,7 +94,7 @@ public class IFCDate {
      * @return
      */
     public GregorianCalendar convertBack() {
-        GregorianCalendar back = new GregorianCalendar(year,0,1, hour, minute, second);
+        GregorianCalendar back = new GregorianCalendar(year, 0, 1, hour, minute, second);
         back.add(Calendar.DAY_OF_YEAR, dayOfYear - 1);
         return back;
     }

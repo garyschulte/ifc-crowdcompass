@@ -64,7 +64,7 @@ Create a branch in this repository, but do not push it to a public remote. Do yo
 
 There is a file `Main.java`, which requires and uses a not yet implemented `IFCDate` class in the manner shown by the examples above.
 
-Run the file by executing `java com.ifc.Main`. It won't work at first! Without changing the contents of `Main.java`, make it execute to completion.
+Run the file by executing `java java.ifc.Main`. It won't work at first! Without changing the contents of `Main.java`, make it execute to completion.
 
 But that's not all! `Main.java` doesn't fully implement the _International Fixed Calendar_ as described above. Your implementation should!
 
