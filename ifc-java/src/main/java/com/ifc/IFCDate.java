@@ -44,23 +44,26 @@ public class IFCDate {
         this.minute = cal.get(Calendar.MINUTE);
         this.second = cal.get(Calendar.SECOND);
 
+
         // if we are on or past leap day, our leap month offset is 1 for month determination below
-        int leapMonthOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL ? 1 : 0;
+        int  leapDayMonthOffset = cal.isLeapYear(year) && dayOfYear >= LEAP_DAY_ORDINAL ? 1 : 0;
+        // 'year day' offset for month determination if we happen to be on the last day of the year
+        int yearDayMonthOffset = dayOfYear == 365 + leapDayMonthOffset ? 1 : 0;
+
+        // if we are *past* leap day, our leap day offset is 1 for day determination below
+        int leapDayDayOffset = cal.isLeapYear(year) && dayOfYear > LEAP_DAY_ORDINAL ? 1 : 0;
 
         // fidgety, month is fundamentally dayOfYear div 28, with offsets:
         //  minus a leapMonthOffset calculated above
         //  minus one to account for current month 28th day reporting
         //  finally add 1 to the result to make months 1 based
-        this.month = (dayOfYear - leapMonthOffset - 1) / FIXED_DAYS + ONE_BASED;
+        this.month = (dayOfYear - yearDayMonthOffset - leapDayMonthOffset - 1) / FIXED_DAYS + ONE_BASED;
 
-
-        // if we are *past* leap day, our leap day offset is 1 for day determination below
-        int leapDayOffset = cal.isLeapYear(year) && dayOfYear > LEAP_DAY_ORDINAL ? 1 : 0;
 
         // similarly fidgety, day is dayOfYear minus whole months, with offsets:
         //   minus a leapDayOffset
         //   minus 1 from months to make months zero based
-        this.day = dayOfYear - leapDayOffset - (month - ONE_BASED) * FIXED_DAYS;
+        this.day = dayOfYear - leapDayDayOffset - (month - ONE_BASED) * FIXED_DAYS;
     }
 
     public int day() {
@@ -112,9 +115,9 @@ public class IFCDate {
         // starting from jan, so go back to zero-based month value
         int addTo = (month - ONE_BASED) * 28;
 
-        // if we are past june and it is a leap year, tack on another day
+        // if we are past june and it is a leap year, tack on another day (first case of 29 day month)
         if (month > 6 && back.isLeapYear(year)) {
-            addTo +=1;
+            addTo += 1;
         }
 
         // starting on jan 1, so subtract a day from day value

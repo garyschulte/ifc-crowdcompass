@@ -15,18 +15,18 @@ import java.util.GregorianCalendar;
 public class IFCDateTest {
 
     static GregorianCalendar someDates[] = {
-            new GregorianCalendar(2000, 3, 1), // divisible by 400 non leap year
-            new GregorianCalendar(2004, 2, 29), // regular leap year
-            new GregorianCalendar(2016, 12, 31), // year day in a leap year
-            new GregorianCalendar(2015, 12, 31), // year day in a non leap year
-            new GregorianCalendar(2017, 5, 17),  // today just because
+            new GregorianCalendar(2000, 2, 1), // divisible by 400 non leap year
+            new GregorianCalendar(2004, 1, 29), // regular leap year
+            new GregorianCalendar(2016, 11, 31), // year day in a leap year
+            new GregorianCalendar(2015, 11, 31), // year day in a non leap year
+            new GregorianCalendar(2017, 4, 17),  // today just because
             new GregorianCalendar(2016, 0, 17), // zero based january date
             new GregorianCalendar(2016, 5, 17), // leap day ordinal in leap year
             new GregorianCalendar(2016, 5, 18), // day after leap day ordinal in leap year
             new GregorianCalendar(2015, 5, 17), // leap day ordinal in nonleap year
-            new GregorianCalendar(1969, 12, 30), // pre-epoch
+            new GregorianCalendar(1969, 11, 30), // pre-epoch
             new GregorianCalendar(2, 7, 10), // way back date
-            new GregorianCalendar(2017, 5, 17, 11, 19, 20) // just to be sure time components are working
+            new GregorianCalendar(2017, 4, 17, 11, 19, 20) // just to be sure time components are working
     };
 
     @Parameterized.Parameters
@@ -44,6 +44,6 @@ public class IFCDateTest {
         assert ifcdate.day() <= 29;
         assert ifcdate.leap_day() == (cal.isLeapYear(cal.get(Calendar.YEAR)) && cal.get(Calendar.DAY_OF_YEAR) == 169);
         Assert.assertEquals(cal,ifcdate.convertBack());
-        assert ifcdate.year_day() == (cal.get(Calendar.MONTH) == 12 && cal.get(Calendar.DAY_OF_MONTH) == 31);
+        assert ifcdate.year_day() == (cal.get(Calendar.MONTH) == 11 && cal.get(Calendar.DAY_OF_MONTH) == 31);
     }
 }
