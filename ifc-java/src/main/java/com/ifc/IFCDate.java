@@ -95,7 +95,14 @@ public class IFCDate {
      */
     public GregorianCalendar convertBack() {
         GregorianCalendar back = new GregorianCalendar(year, 0, 1, hour, minute, second);
-        back.add(Calendar.DAY_OF_YEAR, dayOfYear - 1);
+
+        int addTo = month * 28;
+        if (month > 6 && back.isLeapYear(year)) {
+            addTo +=1;
+        }
+        addTo += day - 1;
+        back.add(Calendar.DAY_OF_YEAR, addTo);
+
         return back;
     }
 

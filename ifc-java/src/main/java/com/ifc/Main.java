@@ -3,7 +3,7 @@ package com.ifc;
 import java.util.*;
 
 public class Main {
-
+    @CoverageIgnore
     public static void main(String[] args) {
         {
 
