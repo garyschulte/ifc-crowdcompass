@@ -20,7 +20,7 @@ public class IFCDateTest {
             new GregorianCalendar(2016, 12, 31), // year day in a leap year
             new GregorianCalendar(2015, 12, 31), // year day in a non leap year
             new GregorianCalendar(2017, 5, 17),  // today just because
-            new GregorianCalendar(2016, 0, 17), // leap day ordinal in leap year
+            new GregorianCalendar(2016, 0, 17), // zero based january date
             new GregorianCalendar(2016, 5, 17), // leap day ordinal in leap year
             new GregorianCalendar(2016, 5, 18), // day after leap day ordinal in leap year
             new GregorianCalendar(2015, 5, 17), // leap day ordinal in nonleap year

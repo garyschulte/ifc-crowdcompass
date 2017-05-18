@@ -54,7 +54,7 @@ public class IFCDate {
         this.month = (dayOfYear - leapMonthOffset - 1) / FIXED_DAYS + ONE_BASED;
 
 
-        // if we are past leap day, our leap day offset is 1 for day determination below
+        // if we are *past* leap day, our leap day offset is 1 for day determination below
         int leapDayOffset = cal.isLeapYear(year) && dayOfYear > LEAP_DAY_ORDINAL ? 1 : 0;
 
         // similarly fidgety, day is dayOfYear minus whole months, with offsets:
